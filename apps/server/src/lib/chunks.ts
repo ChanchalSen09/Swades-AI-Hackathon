@@ -30,6 +30,10 @@ export const decodeChunkPayload = (input: string): Buffer => {
 };
 
 export const createChunkChecksum = async (buffer: Buffer): Promise<string> => {
-  const digest = await crypto.subtle.digest("SHA-256", buffer);
+  const bytes = new Uint8Array(buffer);
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    bytes,
+  );
   return Buffer.from(digest).toString("hex");
 };

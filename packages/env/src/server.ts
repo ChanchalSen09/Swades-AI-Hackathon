@@ -8,7 +8,7 @@ export const env = createEnv({
     DATABASE_SSL_REJECT_UNAUTHORIZED: z
       .string()
       .transform((value) => value === "true")
-      .default("true"),
+      .default(false),
     DATABASE_SSL_CA: z.string().min(1).optional(),
     OPENAI_API_KEY: z.string().min(1).optional(),
     OPENAI_TRANSCRIPTION_MODEL: z.string().min(1).default("gpt-4o-mini-transcribe"),
@@ -21,7 +21,7 @@ export const env = createEnv({
     S3_FORCE_PATH_STYLE: z
       .string()
       .transform((value) => value === "true")
-      .default("true"),
+      .default(true),
     CHUNK_UPLOAD_MAX_RETRIES: z.coerce.number().int().min(1).max(10).default(3),
     CHUNK_RECONCILE_BATCH_SIZE: z.coerce.number().int().min(1).max(1000).default(200),
     NODE_ENV: z.enum(["development", "production", "test"]).default("development"),

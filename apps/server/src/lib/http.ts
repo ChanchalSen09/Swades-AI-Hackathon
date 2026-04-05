@@ -1,10 +1,15 @@
 import type { Context } from "hono";
+import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { ZodError } from "zod";
 
 import { AppError, ValidationError } from "./errors";
 import { logger } from "./logger";
 
-export const respondWithError = (c: Context, error: unknown) => {
+const toStatusCode = (status: number): ContentfulStatusCode => {
+  return Math.max(100, Math.min(599, status)) as ContentfulStatusCode;
+};
+
+export const respondWithError = (c: Context, error: unknown): Response => {
   if (error instanceof ZodError) {
     const validationError = new ValidationError(error.issues.map((issue) => issue.message).join(", "));
     return respondWithError(c, validationError);
@@ -24,7 +29,7 @@ export const respondWithError = (c: Context, error: unknown) => {
           message: error.message,
         },
       },
-      error.statusCode,
+      toStatusCode(error.statusCode),
     );
   }
 
@@ -40,6 +45,6 @@ export const respondWithError = (c: Context, error: unknown) => {
         message: "Unexpected server error",
       },
     },
-    500,
+    toStatusCode(500),
   );
 };
