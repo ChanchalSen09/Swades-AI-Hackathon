@@ -72,6 +72,7 @@ export function useRecorder(options: UseRecorderOptions = {}) {
   const [chunks, setChunks] = useState<WavChunk[]>([])
   const [elapsed, setElapsed] = useState(0)
   const [stream, setStream] = useState<MediaStream | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   const streamRef = useRef<MediaStream | null>(null)
   const audioCtxRef = useRef<AudioContext | null>(null)
@@ -115,7 +116,12 @@ export function useRecorder(options: UseRecorderOptions = {}) {
     if (statusRef.current === "recording") return
 
     setStatus("requesting")
+    setError(null)
     try {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error("This browser does not support microphone recording.")
+      }
+
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         audio: deviceId
           ? { deviceId: { exact: deviceId }, echoCancellation: true, noiseSuppression: true }
@@ -123,6 +129,7 @@ export function useRecorder(options: UseRecorderOptions = {}) {
       })
 
       const audioCtx = new AudioContext()
+      await audioCtx.resume()
       const source = audioCtx.createMediaStreamSource(mediaStream)
       const processor = audioCtx.createScriptProcessor(BUFFER_SIZE, 1, 1)
       const nativeSampleRate = audioCtx.sampleRate
@@ -183,7 +190,13 @@ export function useRecorder(options: UseRecorderOptions = {}) {
           )
         }
       }, 100)
-    } catch {
+    } catch (caughtError) {
+      const message =
+        caughtError instanceof Error
+          ? caughtError.message
+          : "Unable to start recording. Please check microphone access."
+
+      setError(message)
       setStatus("idle")
     }
   }, [deviceId, chunkThreshold])
@@ -234,5 +247,16 @@ export function useRecorder(options: UseRecorderOptions = {}) {
     }
   }, [])
 
-  return { status, start, stop, pause, resume, chunks, elapsed, stream, clearChunks }
+  return {
+    status,
+    start,
+    stop,
+    pause,
+    resume,
+    chunks,
+    elapsed,
+    stream,
+    clearChunks,
+    error,
+  }
 }

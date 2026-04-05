@@ -60,6 +60,46 @@ npm run dev
 - Web app: [http://localhost:3001](http://localhost:3001)
 - API server: [http://localhost:3000](http://localhost:3000)
 
+## Vercel Deployment
+
+Deploy this monorepo as two separate Vercel projects.
+
+### 1. Web Project
+
+- Root Directory: `apps/web`
+- Framework Preset: `Next.js`
+- Build Command: `npm run build`
+- Environment Variables:
+  - `NEXT_PUBLIC_SERVER_URL=https://your-server-project.vercel.app`
+
+### 2. Server Project
+
+- Root Directory: `apps/server`
+- Framework Preset: `Other`
+- Entry stays as the default exported Hono app in `src/index.ts`
+- Environment Variables:
+  - `DATABASE_URL`
+  - `DATABASE_SSL_REJECT_UNAUTHORIZED`
+  - `DATABASE_SSL_CA` if your provider requires it
+  - `CORS_ORIGIN=https://your-web-project.vercel.app`
+  - `S3_ENDPOINT`
+  - `S3_REGION`
+  - `S3_ACCESS_KEY_ID`
+  - `S3_SECRET_ACCESS_KEY`
+  - `S3_BUCKET_NAME`
+  - `S3_FORCE_PATH_STYLE`
+  - `CHUNK_UPLOAD_MAX_RETRIES`
+  - `CHUNK_RECONCILE_BATCH_SIZE`
+  - `OPENAI_API_KEY` only if you re-enable backend transcription
+
+### Deployment Notes
+
+- Hono supports deployment to Vercel with a default export app.
+- Create one Vercel project for `apps/web` and one for `apps/server`.
+- After the server deploys, copy its public URL into the web project's `NEXT_PUBLIC_SERVER_URL`.
+- Then redeploy the web project so the frontend points to the live backend.
+- For local development you can still use `localhost` or `127.0.0.1`, but production should use the Vercel HTTPS domains.
+
 ## Load Testing
 
 Target: **300,000 requests** to validate the chunking pipeline under heavy load.
