@@ -70,22 +70,43 @@ declare global {
   }
 }
 
-const speakerMeta: Record<SpeakerId, { label: string; tone: string }> = {
+const speakerMeta: Record<
+  SpeakerId,
+  {
+    label: string
+    tone: string
+    toneAccent: string
+    transcriptTone: string
+    subtleText: string
+  }
+> = {
   user1: {
     label: "User 1",
-    tone: "border-sky-500/30 bg-sky-500/10 text-sky-900",
+    tone: "border-sky-500/30 bg-sky-500/12 text-sky-100",
+    toneAccent: "text-sky-300",
+    transcriptTone: "border-sky-500/20 bg-sky-950/30",
+    subtleText: "text-sky-200/80",
   },
   user2: {
     label: "User 2",
-    tone: "border-emerald-500/30 bg-emerald-500/10 text-emerald-900",
+    tone: "border-emerald-500/30 bg-emerald-500/12 text-emerald-100",
+    toneAccent: "text-emerald-300",
+    transcriptTone: "border-emerald-500/20 bg-emerald-950/30",
+    subtleText: "text-emerald-200/80",
   },
   user3: {
     label: "User 3",
-    tone: "border-amber-500/30 bg-amber-500/10 text-amber-900",
+    tone: "border-amber-500/30 bg-amber-500/12 text-amber-100",
+    toneAccent: "text-amber-300",
+    transcriptTone: "border-amber-500/20 bg-amber-950/30",
+    subtleText: "text-amber-200/80",
   },
   user4: {
     label: "User 4",
-    tone: "border-fuchsia-500/30 bg-fuchsia-500/10 text-fuchsia-900",
+    tone: "border-fuchsia-500/30 bg-fuchsia-500/12 text-fuchsia-100",
+    toneAccent: "text-fuchsia-300",
+    transcriptTone: "border-fuchsia-500/20 bg-fuchsia-950/30",
+    subtleText: "text-fuchsia-200/80",
   },
 }
 
@@ -645,28 +666,32 @@ export default function RecorderPage() {
                 const meta = speakerMeta[turn.speaker]
 
                 return (
-                  <div key={turn.id} className={`rounded-sm border px-4 py-3 ${meta.tone}`}>
+                  <div key={turn.id} className={`rounded-xl border px-5 py-4 shadow-lg shadow-black/10 ${meta.tone}`}>
                     <div className="flex items-center justify-between gap-3">
-                      <div className="text-sm font-semibold">{meta.label}</div>
-                      <div className="text-xs opacity-80">
+                      <div className={`text-sm font-semibold ${meta.toneAccent}`}>{meta.label}</div>
+                      <div className={`text-xs ${meta.subtleText}`}>
                         {new Date(turn.createdAt).toLocaleTimeString()}
                       </div>
                     </div>
-                    <div className="mt-2 text-sm">
+                    <div className={`mt-2 text-sm ${meta.toneAccent}`}>
                       Duration: {formatDuration(turn.durationSeconds)}
                     </div>
-                    <div className="mt-1 text-sm opacity-80">
+                    <div className={`mt-1 text-sm ${meta.subtleText}`}>
                       Input: {turn.deviceLabel}
                     </div>
-                    <div className="mt-3 rounded-sm border border-border/40 bg-background/60 px-3 py-2 text-sm">
-                      <div className="mb-1 text-xs uppercase tracking-[0.2em] opacity-70">
+                    <div className={`mt-3 rounded-lg border px-3 py-3 text-sm text-zinc-100 ${meta.transcriptTone}`}>
+                      <div className={`mb-1 text-xs uppercase tracking-[0.2em] ${meta.subtleText}`}>
                         Transcript
                       </div>
-                      <div>{turn.transcript || "No transcript captured for this turn."}</div>
+                      <div className="leading-6 text-zinc-100">
+                        {turn.transcript || "No transcript captured for this turn."}
+                      </div>
                     </div>
-                    <audio className="mt-3 w-full" controls src={turn.audioUrl}>
-                      <track kind="captions" />
-                    </audio>
+                    <div className="mt-3 rounded-lg border border-white/10 bg-black/25 p-2">
+                      <audio className="w-full" controls src={turn.audioUrl}>
+                        <track kind="captions" />
+                      </audio>
+                    </div>
                   </div>
                 )
               })

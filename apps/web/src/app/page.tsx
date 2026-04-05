@@ -12,32 +12,12 @@ const TITLE_TEXT = String.raw`
   ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝    ╚══════╝╚══════╝╚═╝  ╚═══╝
 `;
 
-const NAME_TEXT = String.raw`
-
-  ██████╗██╗  ██╗ █████╗ ███╗   ██╗ ██████╗██╗  ██╗ █████╗ ██╗        
- ██╔════╝██║  ██║██╔══██╗████╗  ██║██╔════╝██║  ██║██╔══██╗██║        
- ██║     ███████║███████║██╔██╗ ██║██║     ███████║███████║██║        
- ██║     ██╔══██║██╔══██║██║╚██╗██║██║     ██╔══██║██╔══██║██║        
- ╚██████╗██║  ██║██║  ██║██║ ╚████║╚██████╗██║  ██║██║  ██║███████╗   
-  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝   
-
- ███████╗███████╗███╗   ██╗
- ██╔════╝██╔════╝████╗  ██║
- ███████╗█████╗  ██╔██╗ ██║
- ╚════██║██╔══╝  ██║╚██╗██║
- ███████║███████╗██║ ╚████║
- ╚══════╝╚══════╝╚═╝  ╚═══╝
-`;
-
 export default function Home() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 text-zinc-100">
       <div className="overflow-x-auto rounded-3xl border border-zinc-800 bg-zinc-950/70 p-6 shadow-2xl shadow-black/20">
         <pre className="font-mono text-[10px] leading-none text-zinc-100 sm:text-xs md:text-sm">
           {TITLE_TEXT}
-        </pre>
-        <pre className="mt-4 font-mono text-[10px] leading-none text-zinc-400 sm:text-xs md:text-sm">
-          {NAME_TEXT}
         </pre>
       </div>
 
