@@ -5,7 +5,9 @@
     "declarationMap": true,
     "sourceMap": true,
     "outDir": "dist",
+    "rootDir": "src",
     "composite": true,
     "strictNullChecks": true
-  }
+  },
+  "include": ["src/**/*.ts"]
 }
