@@ -8,19 +8,18 @@ export default function Header() {
   ] as const;
 
   return (
-    <div>
-      <div className="flex flex-row items-center justify-between px-2 py-1">
-        <nav className="flex gap-4 text-lg">
+    <div className="border-b border-zinc-800 bg-zinc-950/95 backdrop-blur">
+      <div className="flex flex-row items-center justify-between px-4 py-3">
+        <nav className="flex gap-5 text-lg text-zinc-100">
           {links.map(({ to, label }) => {
             return (
-              <Link key={to} href={to}>
+              <Link key={to} href={to} className="transition-colors hover:text-cyan-300">
                 {label}
               </Link>
             );
           })}
         </nav>
       </div>
-      <hr />
     </div>
   );
 }

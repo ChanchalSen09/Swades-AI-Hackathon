@@ -1,11 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { AlertTriangle, CheckCircle2, LoaderCircle, ServerCrash } from "lucide-react";
+import { Info, MoonStar, Server } from "lucide-react";
 
-const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL ?? "http://localhost:3000";
-
-const TITLE_TEXT = `
+const TITLE_TEXT = String.raw`
 
   ██████╗██╗  ██╗ █████╗ ███╗   ██╗ ██████╗██╗  ██╗ █████╗ ██╗         ███████╗███████╗███╗   ██╗
  ██╔════╝██║  ██║██╔══██╗████╗  ██║██╔════╝██║  ██║██╔══██╗██║         ██╔════╝██╔════╝████╗  ██║
@@ -15,114 +12,85 @@ const TITLE_TEXT = `
   ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝    ╚══════╝╚══════╝╚═╝  ╚═══╝
 `;
 
-type ApiState =
-  | { kind: "loading" }
-  | { kind: "healthy"; message: string }
-  | { kind: "unhealthy"; message: string };
+const NAME_TEXT = String.raw`
+
+  ██████╗██╗  ██╗ █████╗ ███╗   ██╗ ██████╗██╗  ██╗ █████╗ ██╗        
+ ██╔════╝██║  ██║██╔══██╗████╗  ██║██╔════╝██║  ██║██╔══██╗██║        
+ ██║     ███████║███████║██╔██╗ ██║██║     ███████║███████║██║        
+ ██║     ██╔══██║██╔══██║██║╚██╗██║██║     ██╔══██║██╔══██║██║        
+ ╚██████╗██║  ██║██║  ██║██║ ╚████║╚██████╗██║  ██║██║  ██║███████╗   
+  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝   
+
+ ███████╗███████╗███╗   ██╗
+ ██╔════╝██╔════╝████╗  ██║
+ ███████╗█████╗  ██╔██╗ ██║
+ ╚════██║██╔══╝  ██║╚██╗██║
+ ███████║███████╗██║ ╚████║
+ ╚══════╝╚══════╝╚═╝  ╚═══╝
+`;
 
 export default function Home() {
-  const [apiState, setApiState] = useState<ApiState>({ kind: "loading" });
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const checkApi = async () => {
-      setApiState({ kind: "loading" });
-
-      try {
-        const response = await fetch(serverUrl, {
-          method: "GET",
-        });
-
-        const body = await response.text();
-
-        if (cancelled) {
-          return;
-        }
-
-        if (!response.ok) {
-          setApiState({
-            kind: "unhealthy",
-            message: `API responded with ${response.status}.`,
-          });
-          return;
-        }
-
-        setApiState({
-          kind: "healthy",
-          message: body.trim() || "API is responding normally.",
-        });
-      } catch (error) {
-        if (cancelled) {
-          return;
-        }
-
-        setApiState({
-          kind: "unhealthy",
-          message:
-            error instanceof Error ? error.message : "Unable to reach the API.",
-        });
-      }
-    };
-
-    void checkApi();
-    const intervalId = window.setInterval(() => {
-      void checkApi();
-    }, 15000);
-
-    return () => {
-      cancelled = true;
-      window.clearInterval(intervalId);
-    };
-  }, []);
-
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-4">
-      <pre className="overflow-x-auto font-mono text-sm">{TITLE_TEXT}</pre>
-      <div className="grid gap-6">
-        <section className="rounded-lg border p-5">
-          <div className="mb-4 flex items-center justify-between gap-4">
-            <div>
-              <h2 className="font-medium">API Status</h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Live health check for the backend service used by the recorder.
-              </p>
+    <div className="mx-auto max-w-5xl px-4 py-8 text-zinc-100">
+      <div className="overflow-x-auto rounded-3xl border border-zinc-800 bg-zinc-950/70 p-6 shadow-2xl shadow-black/20">
+        <pre className="font-mono text-[10px] leading-none text-zinc-100 sm:text-xs md:text-sm">
+          {TITLE_TEXT}
+        </pre>
+        <pre className="mt-4 font-mono text-[10px] leading-none text-zinc-400 sm:text-xs md:text-sm">
+          {NAME_TEXT}
+        </pre>
+      </div>
+
+      <section className="mt-8 rounded-3xl border border-zinc-800 bg-zinc-900/80 p-6 shadow-xl shadow-black/20">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-semibold text-zinc-50">System Status</h2>
+            <p className="mt-2 max-w-2xl text-sm text-zinc-400">
+              The platform is configured for recording, speaker selection, and
+              transcript workflows from a single dashboard.
+            </p>
+          </div>
+          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.25em] text-emerald-300">
+            <MoonStar className="size-3.5" />
+            System Ready
+          </div>
+        </div>
+
+        <div className="mt-6 grid gap-4 md:grid-cols-3">
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/80 p-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-zinc-200">
+              <Server className="size-4 text-cyan-300" />
+              Backend Panel
             </div>
-            <div className="text-xs text-muted-foreground">{serverUrl}</div>
+            <p className="mt-3 text-sm text-zinc-400">
+              API routes and recording services are organized for the recorder
+              workflow and upload lifecycle.
+            </p>
           </div>
 
-          {apiState.kind === "loading" && (
-            <div className="flex items-center gap-2 rounded-sm border border-border/60 bg-muted/20 px-3 py-3 text-sm">
-              <LoaderCircle className="size-4 animate-spin" />
-              Checking backend status...
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/80 p-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-zinc-200">
+              <Info className="size-4 text-amber-300" />
+              Recorder
             </div>
-          )}
+            <p className="mt-3 text-sm text-zinc-400">
+              Mic-only capture, four-user selection, and transcript flow remain on the
+              recorder screen.
+            </p>
+          </div>
 
-          {apiState.kind === "healthy" && (
-            <div className="rounded-sm border border-emerald-300/60 bg-emerald-100/60 px-4 py-3 text-sm text-emerald-950">
-              <div className="flex items-center gap-2 font-medium">
-                <CheckCircle2 className="size-4" />
-                Backend is healthy
-              </div>
-              <div className="mt-2">{apiState.message}</div>
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/80 p-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-zinc-200">
+              <MoonStar className="size-4 text-fuchsia-300" />
+              Theme
             </div>
-          )}
-
-          {apiState.kind === "unhealthy" && (
-            <div className="rounded-sm border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-              <div className="flex items-center gap-2 font-medium">
-                <ServerCrash className="size-4" />
-                Backend is unreachable
-              </div>
-              <div className="mt-2">{apiState.message}</div>
-              <div className="mt-3 flex items-center gap-2 text-xs">
-                <AlertTriangle className="size-3" />
-                Check whether the server is running on port 3000.
-              </div>
-            </div>
-          )}
-        </section>
-      </div>
+            <p className="mt-3 text-sm text-zinc-400">
+              The interface uses a dark layout to keep the dashboard focused and
+              presentation ready.
+            </p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
